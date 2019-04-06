@@ -1,4 +1,3 @@
-#include "syntax.h"
 #include "../word_analysis/check_word.h"
 #include "../whole_value.h"
 #include "../gramma_analysis/sentence_pattern.h"

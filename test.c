@@ -4,9 +4,7 @@ struct point{
 };
 
 int function() {
-        void func() {
-                
-        }
+        int a = 10;
 }
 
 

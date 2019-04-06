@@ -19,8 +19,4 @@ int line_num;                           // 行号
 FILE *fin;
 
 char* filename;
-
-int syntax_level;
-int syntax_state;
-
 #endif // __WHOLE_VALUE_H__

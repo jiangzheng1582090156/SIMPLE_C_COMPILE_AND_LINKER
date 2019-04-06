@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../syntax/syntax.h"
-
 
 /**
  * 获得单词v的源码字符串

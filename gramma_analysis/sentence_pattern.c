@@ -3,7 +3,6 @@
 #include "sentence_pattern.h"
 #include "../error/error.h"
 #include "../word_analysis/check_word.h"
-#include "../syntax/syntax.h"
 // 翻译单元:
 // <translation_unit>::={<external_declaration>}<ETC_EOF>
 void translation_unit()
@@ -62,7 +61,6 @@ void external_declaration(int l)
                         if (token == ETC_COMMA) {
                                 get_token();
                         } else {
-                                syntax_state = SNTX_LF_HT;
                                 skip(ETC_SEMCOLON);
                                 break;
                         }
@@ -85,26 +83,21 @@ int type_specifier()
         switch(token) {
         case ETC_KW_CHAR:
                 type_found = 1;
-                syntax_state = SNTX_SP;
                 get_token();
                 break;
         case ETC_KW_SHORT:
                 type_found = 1;
-                syntax_state = SNTX_SP;
                 get_token();
                 break;
         case ETC_KW_VOID:
                 type_found = 1;
-                syntax_state = SNTX_SP;
                 get_token();
                 break;
         case ETC_KW_INT:
                 type_found = 1;
-                syntax_state = SNTX_SP;
                 get_token();
                 break;
         case ETC_KW_STRUCT:
-                syntax_state = SNTX_SP;
                 struct_specifier();
                 type_found = 1;
                 break;
@@ -124,18 +117,8 @@ void struct_specifier()
         get_token();  //得到定义名字
         v = token;
 
-        syntax_state = SNTX_DELY;
         get_token();
 
-        if (token == ETC_OPENBRA) {  // 结构体的定义
-                syntax_state = SNTX_LF_HT;
-        } else if (token == ETC_CLOSEPA) {  // 适用于sizeof(struct name);
-                syntax_state = SNTX_NUL;
-        } else {                        //适用于结构体变量的定义
-                syntax_state = SNTX_SP;
-        }
-
-        // syntax_indent();
 
         // 关键字不能做变量定义的名字
         if (v < ETC_KW_IDENT)
@@ -154,8 +137,6 @@ void struct_specifier()
 void struct_declaration_list()
 {
         int maxalign, offset;
-        syntax_state = SNTX_LF_HT;
-        syntax_level++;
 
         get_token();
         while (token != ETC_CLOSEBRA) {
@@ -163,7 +144,6 @@ void struct_declaration_list()
         }
         skip(ETC_CLOSEBRA);
 
-        syntax_state = SNTX_LF_HT;
 }
 
 // 结构声明
@@ -182,7 +162,6 @@ void struct_declaration()
                         break;
                 skip(ETC_COMMA);
         }
-        syntax_state = SNTX_LF_HT;
         skip(ETC_SEMCOLON);  //检查是否缺少了某字符
 }
 
@@ -197,7 +176,6 @@ void function_calling_conversion(int *fc)
         *fc = ETC_KW_CDECL;
         if (token == ETC_KW_CDECL || token == ETC_KW_STDCALL) {
                 *fc = token;
-                syntax_state = SNTX_SP;
                 get_token();
         }
 }
@@ -305,13 +283,7 @@ void parameter_type_list()
                 }
         }
 
-        syntax_state = SNTX_DELY;
         skip(ETC_CLOSEPA);
-        if (token == ETC_OPENBRA) //函数定义
-                syntax_state = SNTX_LF_HT;
-        else
-                syntax_state = SNTX_NUL;
-        // syntax_indent();
 }
 
 
@@ -376,8 +348,6 @@ void statement()
 
 void compand_statement()
 {
-        syntax_state = SNTX_LF_HT;
-        syntax_level++;
 
         get_token();
         while (is_type_specifier(token)) {
@@ -388,7 +358,6 @@ void compand_statement()
                 statement();
         }
 
-        syntax_state = SNTX_LF_HT;
         get_token();
 }
 
@@ -420,7 +389,6 @@ void expression_statement()
         if (token != ETC_SEMCOLON) {
                 expression();
         }
-        syntax_state = SNTX_LF_HT;
         skip(ETC_SEMCOLON);
 }
 
@@ -428,16 +396,13 @@ void expression_statement()
 // <if_statement>::=<ETC_KW_IF><ETC_OPENPA><expression><ETC_CLOSEPA><statement>[<ETC_KW_ELSE><statement>]
 void if_statement()
 {
-        syntax_state = SNTX_SP;
         get_token();
         skip(ETC_OPENPA);
         expression();
-        syntax_state = SNTX_LF_HT;
         skip(ETC_CLOSEPA);
 
         statement();
         if (token == ETC_KW_ELSE) {
-                syntax_state = SNTX_LF_HT;
                 get_token();
                 statement();
         }
@@ -462,7 +427,6 @@ void for_statement()
         if (token != ETC_CLOSEPA) {
                 expression();
         }
-        syntax_state = SNTX_LF_HT;
         skip(ETC_CLOSEPA);
         statement();
 }
@@ -474,7 +438,6 @@ void for_statement()
 void continue_statement()
 {
         get_token();
-        syntax_state = SNTX_LF_HT;
         skip(ETC_SEMCOLON);
 }
 // break语句
@@ -482,7 +445,6 @@ void continue_statement()
 void break_statement()
 {
         get_token();
-        syntax_state = SNTX_LF_HT;
         skip(ETC_SEMCOLON);
 }
 
@@ -492,18 +454,12 @@ void break_statement()
 //                         | <ETC_KW_RETURN><expression><ETC_SEMCOLON>
 void return_statement()
 {
-        syntax_state = SNTX_DELY;
         get_token();
-        if (token == ETC_SEMCOLON)      // 适用于return
-                syntax_state = SNTX_NUL;
-        else                            // 适用于return expression
-                syntax_state = SNTX_SP;
-        // syntax_indent();
+
 
         if (token != ETC_SEMCOLON)
                 expression();
 
-        syntax_state = SNTX_LF_HT;
         skip(ETC_SEMCOLON);
 }
 

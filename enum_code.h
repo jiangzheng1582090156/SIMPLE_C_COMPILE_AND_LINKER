@@ -51,12 +51,6 @@ enum e_token_code {
         ETC_KW_IDENT
 };
 
-enum e_syntax_state{
-        SNTX_NUL,       // null
-        SNTX_SP,        // space
-        SNTX_LF_HT,     // 换行缩进
-        SNTX_DELY       // 延迟
-};
 
 #define SC_GLOBAL       1
 #define SC_LOCAL        2
