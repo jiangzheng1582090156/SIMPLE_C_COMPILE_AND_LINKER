@@ -61,6 +61,5 @@ enum e_syntax_state{
 #define SC_GLOBAL       1
 #define SC_LOCAL        2
 #define SC_MEMBER       3
-#define SC_NOTHING      7
 
 #endif // __ENUME_CODE_H__
