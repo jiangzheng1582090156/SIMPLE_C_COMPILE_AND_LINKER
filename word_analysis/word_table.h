@@ -4,10 +4,8 @@
 #include "../enum_code.h"
 #include "../list/list.h"
 #include "../whole_value.h"
+#include "../semantic/symbol.h"
 
-
-
-struct symbol {};
 
 struct tk_world {
         struct list_head node;          // 链表节点
