@@ -4,7 +4,7 @@
 #include "../enum_code.h"
 #include "../list/list.h"
 #include "../whole_value.h"
-#include "../semantic/symbol.h"
+#include "../semantic_analysis/symbol_table.h"
 
 
 struct tk_world {
@@ -12,8 +12,8 @@ struct tk_world {
         int etc_code;                   // 单词编码
         struct tk_world *next;          // 指向hash冲突的同名词
         char *spelling;                 // 单词字符串
-        struct symbol *sym_struct;      // 指向单词表表示的结构定义
-        struct symbol *sym_identifier;  // 执行那个单词所表示的标识符
+        struct symbol *sym_struct;      // 指向单词表表示的结构定义 struct point point指向point结构定义
+        struct symbol *sym_identifier;  // 指向那个单词所表示的标识符 struct point pt 指向pt变量定义
 };
 
 
